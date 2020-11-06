@@ -1,0 +1,38 @@
+SQL QUERIES 
+
+LIST OF ALL USERS
+SELECT * FROM users;
+
+LIST OF USERS THAT ARE NOT EMPLOYEES OF EXPRESSFOOD
+SELECT users.user_id, users.first_name, users.last_name, users.email, users.phone, users.user_name FROM users
+LEFT OUTER JOIN employee_roles ON users.user_id = employee_roles.employee_id
+WHERE employee_roles.employee_id IS NULL;
+
+LIST OF USERS WITH ORDERS / ORDER HISTORY
+SELECT DISTINCT users.user_id, users.first_name, users.last_name, users.email, users.phone, users.user_name FROM users
+JOIN orders ON users.user_id = orders.client_id;
+
+LIST OF ALL MENU ITEMS
+SELECT * FROM dishes;
+
+LIST OF DIFFERENT DAILY MENU ITEMS
+SELECT * FROM availability_dates
+JOIN dishes ON dishes.dish_id = availability_dates.dish_id
+JOIN dates ON dates.date = availability_dates.date
+WHERE dates.date LIKE '2019-09-02';
+
+
+LIST OF DELIVERY PEOPLE
+SELECT * FROM users 
+JOIN employee_roles ON employee_roles.employee_id = users.user_id
+JOIN roles ON roles.role_id = employee_roles.role_id
+WHERE roles.name LIKE 'Delivery Person';
+
+
+ORDER HISTORY FOR EACH CLIENT:
+SELECT orders.order_id, users.first_name, users.last_name, orders.timestamp, dishes.name, order_details.dish_price, order_details.quantity, order_details.subtotal, orders.total_price, delivery_addresses.address_line_1, delivery_addresses.address_line_2, delivery_addresses.addresss_line_3, delivery_addresses.postcode FROM orders
+JOIN users ON users.user_id = orders.client_id
+JOIN order_details ON orders.order_id = order_details.order_id
+JOIN dishes ON order_details.dish_id = dishes.dish_id
+JOIN delivery_addresses ON orders.delivery_address_id = delivery_addresses.delivery_address_id 
+WHERE users.user_id = 6;
