@@ -1,0 +1,107 @@
+@startuml class
+scale 3
+class User {
+    -ID: PK
+    +firstName: string
+    +lastName: string
+    +email: string
+    +phone: string
+    +userName: string
+    +encrypted_password: string
+}
+
+class Role {
+    - ID: PK
+    +roleName: string
+}
+
+class EmployeeRole {
+    -ID: PK
+    -UserID: FK 
+    -RoleID: FK
+}
+
+class DeliveryAddress {
+    -ID: PK
+    +addressLine1: string
+    +addressLine2: string
+    +addressLine3: string
+    +city: string
+    +postcode: string
+}
+
+class Dish {
+    -ID: PK
+    +name: string
+    +description: text
+    +category: string
+    +vegetarian: boolean
+    +price: double
+    +imageURL: string 
+}
+
+class AvailabilityDate {
+    -ID: PK
+    -DishID: FK 
+    -DateID: FK
+    +comment: string 
+}
+
+class Order {
+    -ID: PK
+    -ClientID: FK
+    -DeliveryAddress: FK
+    +timestamp: timestamp
+    +totalPrice: double
+    +estimatedDeliveryTime: datetime
+    +paymentStatus: string
+    +orderStatus: string 
+}
+
+class OrderDetails {
+    -ID: PK
+    -OrderID: FK
+    -DishID: FK
+    +quantity: integer
+    +dishPrice: double
+    +totalDishPrice: integer
+}
+
+class Delivery {
+    -ID: PK
+    -OrderID: FK
+    -DeliveryPersonID: FK
+    +deliveredAt: datetime
+}
+
+class Date {
+    -ID: PK
+    +date: datetime
+}
+
+class Postcode {
+    -ID: PK
+    +postcode: string
+}
+
+Order "1..*" -- "1" DeliveryAddress : delivered at
+
+Order "1" --"1" Delivery : has
+
+User "1" -- "0..*" Order : (C) places
+
+User "1" -- "0..*" Delivery : (DP) delivers
+
+' User "1" -- "1..*" DeliveryAddress : has
+
+User "1..*" -- "0..*" Role : (E) works as
+(User, Role) .. EmployeeRole
+
+Dish "4" -- "1..*" Date : is available on
+(Dish, Date) .. AvailabilityDate
+
+Dish "1..*" -- "0..*" Order : is part of
+(Dish, Order) .. OrderDetails
+
+
+@enduml
